@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator 
+from datetime import date
 
 
 class Category(models.Model):
@@ -11,9 +13,10 @@ class Category(models.Model):
         unique=True,
         max_length=50
     )
-    
+
     class Meta:
-        verbose_name_plural="Categories"
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name
@@ -30,6 +33,9 @@ class Genre(models.Model):
         max_length=50
     )
 
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
     def __str__(self):
         return self.name
@@ -43,19 +49,22 @@ class Title(models.Model):
     )
     year = models.IntegerField(
         verbose_name='Год выпуска',
+        default=date.today().year,
+        validators=[
+            MinValueValidator(-3000),
+            MaxValueValidator(date.today().year),
+        ],
     )
     description = models.TextField(
         blank=True,
         null=True,
         verbose_name='Краткое описание',
     )
-    #genre = models.ManyToManyField(
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
         Genre,
-        on_delete=models.SET_NULL,
-        null=True,
+        related_name='titles',
         verbose_name='Жанр',
-        # додумать реализацию
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
@@ -65,6 +74,9 @@ class Title(models.Model):
         verbose_name='Категория',
     )
 
+    class Meta:
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
 
     def __str__(self):
         return self.name
