@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import RegexValidator
 
 
 class User(AbstractUser):
@@ -14,7 +15,13 @@ class User(AbstractUser):
         null=False,
         blank=False,
         unique=True,
-        verbose_name='Имя пользователя'
+        verbose_name='Имя пользователя',
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+-]+\z',
+                message='Имя поля содержит недопустимый символ'
+            )
+        ]
     )
     email = models.EmailField(
         max_length=254,
@@ -23,12 +30,12 @@ class User(AbstractUser):
         verbose_name='Адрес электронной почты'
     )
     first_name = models.CharField(
-        max_length=100,
+        max_length=150,
         blank=True,
         verbose_name='Имя'
     )
     last_name = models.CharField(
-        max_length=50,
+        max_length=150,
         blank=True,
         verbose_name='Фамилия'
     )
@@ -46,3 +53,14 @@ class User(AbstractUser):
         default=UserRoles.USER,
         verbose_name='Пользовательская роль (определяет права доступа)'
     )
+
+    @property
+    def is_moderator(self):
+        return self.role == self.UserRoles.MODERATOR
+
+    @property
+    def is_admin(self):
+        return self.role == self.UserRoles.ADMIN
+
+    class Meta:
+        ordering = ['username']

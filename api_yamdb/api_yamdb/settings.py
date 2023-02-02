@@ -1,4 +1,4 @@
-import os
+# import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -108,8 +108,13 @@ AUTH_USER_MODEL = 'users.User'
 
 GENERAL_EMAIL = 'general_admin@any.thing'
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_mails')
+# Для отправки писем локально себе в репозитарий
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_mails')
+
+# Для тестирования работоспособности
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 

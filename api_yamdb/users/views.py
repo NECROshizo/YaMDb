@@ -1,8 +1,8 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import status, viewsets, permissions
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -10,17 +10,37 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api_yamdb.settings import GENERAL_EMAIL
 from users.models import User
 from users.serializers import (GetTokenSerializer, SignupSerializer,
-                               UserSerializer)
+                               UserSerializer, UserEditSerializer)
+from api.permissions import IsAdmin
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
-    permission_classes = (
-        permissions.IsAuthenticated,
-        permissions.IsAdminUser,
+    permission_classes = [IsAuthenticated, IsAdmin, ]
+
+    @action(
+        methods=['GET', 'PATCH'],
+        detail=False,
+        permission_classes=[permissions.IsAuthenticated],
     )
+    def me(self, request):
+        user = User.objects.get(username=request.user.username)
+        if request.method == 'GET':
+            serializer = UserEditSerializer(user)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        if request.method == 'PATCH':
+            serializer = UserEditSerializer(
+                user,
+                data=request.data,
+                partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data=serializer.errors, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -53,11 +73,11 @@ def get_token(request):
     if default_token_generator.check_token(
         user, serializer.validated_data['confirmation_code']
     ):
-        jwt_token = RefreshToken.for_user(user)
+        token = RefreshToken.for_user(user)
         return Response(
             {
-                'jwt_token': str(jwt_token),
-                'access': str((jwt_token.access_token))
+                'refresh': str(token),
+                'access': str((token.access_token))
             },
             status=status.HTTP_200_OK
         )
