@@ -1,20 +1,23 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-
 from users.models import User
+from users.validators import validate_username
 
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         validators=[
-            UniqueValidator(queryset=User.objects.all())
+            UniqueValidator(queryset=User.objects.all()),
+            validate_username,
         ],
         required=True,
+        max_length=150,
     )
     email = serializers.EmailField(
         validators=[
-            UniqueValidator(queryset=User.objects.all())
-        ]
+            UniqueValidator(queryset=User.objects.all()),
+        ],
+        max_length=254,
     )
 
     class Meta:
@@ -46,21 +49,17 @@ class UserEditSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         validators=[
-            UniqueValidator(queryset=User.objects.all())
-        ]
+            UniqueValidator(queryset=User.objects.all()),
+            validate_username,
+        ],
+        max_length=150,
     )
     email = serializers.EmailField(
         validators=[
             UniqueValidator(queryset=User.objects.all())
-        ]
+        ],
+        max_length=254,
     )
-
-    def validate_username(self, value):
-        if value.lower() == 'me':
-            raise serializers.ValidationError(
-                'Имя пользователя необходимо изменить!'
-            )
-        return value
 
     class Meta:
         model = User

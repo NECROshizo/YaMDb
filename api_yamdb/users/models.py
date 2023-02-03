@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 
 
 class User(AbstractUser):
@@ -18,8 +18,8 @@ class User(AbstractUser):
         verbose_name='Имя пользователя',
         validators=[
             RegexValidator(
-                regex=r'^[\w.@+-]+\z',
-                message='Имя поля содержит недопустимый символ'
+                regex=r'^[\w.@+-]+$',
+                message='Имя поля содержит недопустимый символ',
             )
         ]
     )
@@ -60,7 +60,11 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == self.UserRoles.ADMIN
+        return (
+            self.role == self.UserRoles.ADMIN
+            or self.is_staff
+            or self.is_superuser
+        )
 
     class Meta:
         ordering = ['username']
