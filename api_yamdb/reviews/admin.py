@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Genre, Title
+from .models import Category, Genre, Title, Review
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -18,6 +18,8 @@ class TitleAdmin(admin.ModelAdmin):
     ordering = ('name', '-year')
     empty_value_display = '-пусто-'
 
+
+admin.site.register(Review)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Title, TitleAdmin)
