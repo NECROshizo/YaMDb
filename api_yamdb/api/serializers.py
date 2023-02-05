@@ -1,33 +1,99 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
-from reviews.models import Review, Comment, Title
+from rest_framework.validators import UniqueTogetherValidator
+
+from reviews.models import Category, Genre, Title, Review, Comment
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор для категорий"""
+
+    class Meta:
+        model = Category
+        fields = ('name', 'slug')
+        lookup_field = 'slug'
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор для жанров"""
+
+    class Meta:
+        model = Genre
+        fields = ('name', 'slug')
+        lookup_field = 'slug'
+
+
+class TitleGETSerializer(serializers.ModelSerializer):
+    """Сериализатор - список произведений для чтения"""
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(read_only=True, many=True)
+    rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category')
+
+    def get_rating(self, obj):
+        """Получение среднего рейтинга, при отсутствие None"""
+        rating = obj.reviews.aggregate(Avg('score')).get('score__avg')
+        if rating:
+            return round(rating)
+
+
+class TitleEditSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания и редактирования произведений"""
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all()
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'description',
+                  'genre', 'category')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Title.objects.all(),
+                fields=('name', 'year'),
+                message='Это произведение уже добавлено в базу.'
+            )
+        ]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-
-    auther = SlugRelatedField(slug_field='username', read_only=True,)
-    title = SlugRelatedField(slug_field='name', read_only=True,)
+    """Сериализатор для отзывов"""
+    author = SlugRelatedField(slug_field='username', read_only=True,)
 
     class Meta:
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
-    def validate_title(self, value):
+    def validate(self, data):
         """Проверка, что отзыв единственный на произведение"""
-        title = get_object_or_404(Title, pk=value.id)
-        author = self.context['request'].user
-        review = Review.objects.filter(
-            author=author, title=title).exists()
-        if review:
+        author = self.context.get('request').user
+        title_id = self.context.get('view').kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+
+        is_post_method = self.context.get('request').method == 'POST'
+        review = title.reviews.filter(author=author).exists()
+
+        if all([is_post_method, review]):
             raise serializers.ValidationError('Отзыв уже написан')
-        return value
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
-    auther = SlugRelatedField(slug_field='username', read_only=True,)
+    """Сериализатор для комментариев к отзыву"""
+    author = SlugRelatedField(slug_field='username', read_only=True,)
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'pub_date')
         model = Comment
