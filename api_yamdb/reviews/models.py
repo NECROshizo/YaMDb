@@ -1,11 +1,12 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from users.models import User
 from datetime import date
+
+from users.models import User
 
 
 class Category(models.Model):
-    """Категории произведений"""
+    """Модель категорий произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Категория',
@@ -18,13 +19,14 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ('pk',)
 
     def __str__(self):
         return self.name
 
 
 class Genre(models.Model):
-    """Жанры произведений"""
+    """Модель жанров произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Жанр'
@@ -37,13 +39,14 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+        ordering = ('pk',)
 
     def __str__(self):
         return self.name
 
 
 class Title(models.Model):
-    """Произведения"""
+    """Модель произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Произведение',
@@ -78,6 +81,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        ordering = ('pk',)
 
     def __str__(self):
         return self.name
@@ -101,9 +105,10 @@ class Review(models.Model):
         MaxValueValidator(limit_value=10, message='Оценка не более 10'),
         MinValueValidator(limit_value=1, message='Оценка не меньше 1'),
     ])
-    text = models.TextField('Отзов')
-    pud_data = models.DateTimeField(
-        'Дата публикации', auto_now_add=True)
+    text = models.TextField('Отзыв')
+    pub_date = models.DateTimeField(
+        'Дата публикации', auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Отзыв'
@@ -132,14 +137,14 @@ class Comment(models.Model):
         verbose_name='Автор',
     )
 
-    reviews = models.ForeignKey(
+    review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
     )
     text = models.TextField('Коментарий')
-    pud_data = models.DateTimeField(
+    pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
 
     class Meta:
