@@ -6,7 +6,7 @@ from users.models import User
 
 
 class Category(models.Model):
-    """Категории произведений"""
+    """Модель категорий произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Категория',
@@ -26,7 +26,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    """Жанры произведений"""
+    """Модель жанров произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Жанр'
@@ -46,7 +46,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    """Произведения"""
+    """Модель произведений"""
     name = models.CharField(
         max_length=256,
         verbose_name='Произведение',
@@ -105,7 +105,7 @@ class Review(models.Model):
         MaxValueValidator(limit_value=10, message='Оценка не более 10'),
         MinValueValidator(limit_value=1, message='Оценка не меньше 1'),
     ])
-    text = models.TextField('Отзов')
+    text = models.TextField('Отзыв')
     pud_data = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
 

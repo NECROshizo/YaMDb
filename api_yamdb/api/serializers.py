@@ -1,4 +1,3 @@
-from datetime import date
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -6,6 +5,7 @@ from reviews.models import Category, Genre, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор для категорий"""
 
     class Meta:
         model = Category
@@ -14,6 +14,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор для жанров"""
 
     class Meta:
         model = Genre
@@ -21,15 +22,34 @@ class GenreSerializer(serializers.ModelSerializer):
         lookup_field = 'slug'
 
 
-class TitleSerializer(serializers.ModelSerializer):
+class TitleGETSerializer(serializers.ModelSerializer):
+    """Сериализатор - список произведений для чтения"""
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(read_only=True, many=True)
     rating = serializers.IntegerField(read_only=True)
-    
+
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'rating',
                   'description', 'genre', 'category')
+
+
+class TitleEditSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания и редактирования произведений"""
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all()
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'description',
+                  'genre', 'category')
         validators = [
             UniqueTogetherValidator(
                 queryset=Title.objects.all(),
@@ -37,9 +57,3 @@ class TitleSerializer(serializers.ModelSerializer):
                 message='Это произведение уже добавлено в базу.'
             )
         ]
-
-    def validate_year(self, value):
-        if value > date.today().year:
-            raise serializers.ValidationError(
-                'Некорректный год выпуска.')
-        return value
