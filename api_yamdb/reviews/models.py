@@ -66,6 +66,7 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
+        through='GenreTitle',
         related_name='titles',
         verbose_name='Жанр',
         blank=True,
@@ -87,6 +88,22 @@ class Title(models.Model):
         return self.name
 
 
+class GenreTitle(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        verbose_name='Произведение'
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE,
+        verbose_name='Жанр'
+    )
+
+    class Meta:
+        ordering = ('pk',)
+
+
 class Review(models.Model):
     """Модель отзовов на произведение"""
     author = models.ForeignKey(
@@ -106,7 +123,7 @@ class Review(models.Model):
         MinValueValidator(limit_value=1, message='Оценка не меньше 1'),
     ])
     text = models.TextField('Отзыв')
-    pud_data = models.DateTimeField(
+    pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
 
     class Meta:
@@ -136,14 +153,14 @@ class Comment(models.Model):
         verbose_name='Автор',
     )
 
-    reviews = models.ForeignKey(
+    review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
     )
     text = models.TextField('Коментарий')
-    pud_data = models.DateTimeField(
+    pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
 
     class Meta:
