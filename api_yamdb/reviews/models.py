@@ -49,10 +49,10 @@ class Title(models.Model):
     """Модель произведений"""
     name = models.CharField(
         max_length=256,
-        verbose_name='Произведение',
+        verbose_name='Название произведения',
     )
     year = models.IntegerField(
-        verbose_name='Год выпуска',
+        verbose_name='Дата публикации',
         default=date.today().year,
         validators=[
             MinValueValidator(-3000),
@@ -101,13 +101,25 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Произведение',
     )
-    score = models.IntegerField('Оценка', validators=[
-        MaxValueValidator(limit_value=10, message='Оценка не более 10'),
-        MinValueValidator(limit_value=1, message='Оценка не меньше 1'),
-    ])
-    text = models.TextField('Отзыв')
+    score = models.IntegerField(
+        'Оценка',
+        validators=[
+            MaxValueValidator(
+                limit_value=10,
+                message='Оценка не более 10'
+            ),
+            MinValueValidator(
+                limit_value=1,
+                message='Оценка не меньше 1'
+            ),
+        ]
+    )
+    text = models.TextField(
+        verbose_name='Отзыв',
+    )
     pub_date = models.DateTimeField(
-        'Дата публикации', auto_now_add=True
+        verbose_name='Дата публикации',
+        auto_now_add=True
     )
 
     class Meta:
@@ -115,7 +127,10 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
         constraints = [
             models.UniqueConstraint(
-                fields=['author', 'title'],
+                fields=[
+                    'author',
+                    'title'
+                ],
                 name='unique_author_title',
             )
         ]
@@ -143,9 +158,13 @@ class Comment(models.Model):
         related_name='comments',
         verbose_name='Отзыв',
     )
-    text = models.TextField('Коментарий')
+    text = models.TextField(
+        verbose_name='Коментарий',
+    )
     pub_date = models.DateTimeField(
-        'Дата публикации', auto_now_add=True)
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+    )
 
     class Meta:
         verbose_name = 'Коментарий'

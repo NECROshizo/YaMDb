@@ -5,6 +5,7 @@ from users.validators import validate_username
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для работы админа с пользователями"""
     username = serializers.CharField(
         validators=[
             UniqueValidator(queryset=User.objects.all()),
@@ -33,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserEditSerializer(serializers.ModelSerializer):
+    """Сериализатор для редактирования пользователем себя"""
     class Meta:
         model = User
         fields = [
@@ -43,10 +45,13 @@ class UserEditSerializer(serializers.ModelSerializer):
             'bio',
             'role',
         ]
-        read_only_fields = ['role', ]
+        read_only_fields = [
+            'role',
+        ]
 
 
 class SignupSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения кода подтверждения"""
     username = serializers.CharField(
         validators=[
             UniqueValidator(queryset=User.objects.all()),
@@ -70,5 +75,6 @@ class SignupSerializer(serializers.ModelSerializer):
 
 
 class GetTokenSerializer(serializers.Serializer):
+    """Сериализатор для получения токена"""
     username = serializers.CharField()
     confirmation_code = serializers.CharField()

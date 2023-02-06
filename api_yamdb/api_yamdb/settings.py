@@ -1,4 +1,3 @@
-# import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -23,10 +22,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'django_filters',
-    'users.apps.UsersConfig',
     'api.apps.ApiConfig',
-    'reviews',
+    'users.apps.UsersConfig',
+    'reviews.apps.ReviewsConfig',
 ]
 
 MIDDLEWARE = [
@@ -106,19 +106,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+# Access settings
 AUTH_USER_MODEL = 'users.User'
 
-GENERAL_EMAIL = 'general_admin@any.thing'
-
-# Для отправки писем локально себе в репозитарий
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_mails')
-
-# Для тестирования работоспособности
-EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-
-
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -137,3 +129,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# e-mail
+ADMIN_EMAIL = 'general_admin@any.thing'
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'

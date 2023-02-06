@@ -12,7 +12,7 @@ from reviews.models import (
 )
 
 from .filters import TitleFilter
-from .permissions import IsAdminOrReadOnly, EditPermission
+from api.permissions import IsAdminOrReadOnly, IsAuthor
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
@@ -28,7 +28,7 @@ class CreateDestroyListViewSet(mixins.CreateModelMixin,
                                mixins.ListModelMixin,
                                viewsets.GenericViewSet):
     """Методы и свойства для жанров и категорий"""
-    permission_classes = [IsAdminOrReadOnly,]
+    permission_classes = [IsAdminOrReadOnly, ]
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ('name',)
@@ -65,7 +65,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """Вьюсет для модели отзыва"""
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (EditPermission,)
+    permission_classes = (IsAuthor,)
 
     def get_queryset(self):
         title_id = self.kwargs.get("title_id")
@@ -83,7 +83,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """Вьюсет для модели коментариев к отзыву"""
     pagination_class = PageNumberPagination
     serializer_class = CommentSerializer
-    permission_classes = (EditPermission,)
+    permission_classes = (IsAuthor,)
 
     def get_queryset(self):
         review_id = self.kwargs.get("review_id")

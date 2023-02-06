@@ -28,7 +28,8 @@ py -m venv venv
 4 Активировать виртуальное окружение:
 
 ```
-source venv/bin/activate
+source env/Scripts/activate - команда для Windows
+source env/bin/activate - команда для Linux и macOS
 ```
 
 5 Установить зависимости из файла requirements.txt:
@@ -52,3 +53,9 @@ py manage.py migrate
 ```
 py manage.py runserver
 ```
+
+## Порядок использования приложения
+
+Подробное описание API можно получить по адресу:
+http://127.0.0.1:8000/redoc/
+***

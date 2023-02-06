@@ -12,8 +12,12 @@ class UserAdmin(admin.ModelAdmin):
         'bio',
         'role',
     )
-    search_fields = ('username',)
-    list_filter = ('role',)
+    search_fields = (
+        'username',
+    )
+    list_filter = (
+        'role',
+    )
 
 
 admin.site.register(User, UserAdmin)
