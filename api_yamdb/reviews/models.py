@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 
 from users.models import User
@@ -106,8 +106,9 @@ class Review(models.Model):
         MinValueValidator(limit_value=1, message='Оценка не меньше 1'),
     ])
     text = models.TextField('Отзыв')
-    pud_data = models.DateTimeField(
-        'Дата публикации', auto_now_add=True)
+    pub_date = models.DateTimeField(
+        'Дата публикации', auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Отзыв'
@@ -136,14 +137,14 @@ class Comment(models.Model):
         verbose_name='Автор',
     )
 
-    reviews = models.ForeignKey(
+    review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
     )
     text = models.TextField('Коментарий')
-    pud_data = models.DateTimeField(
+    pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
 
     class Meta:
