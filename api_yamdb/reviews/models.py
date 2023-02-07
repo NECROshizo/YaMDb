@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 
 from users.models import User
@@ -124,7 +124,8 @@ class Review(models.Model):
     ])
     text = models.TextField('Отзыв')
     pub_date = models.DateTimeField(
-        'Дата публикации', auto_now_add=True)
+        'Дата публикации', auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Отзыв'
