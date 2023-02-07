@@ -21,7 +21,6 @@ FILES_MODELS = [
 class Command(BaseCommand):
     help = 'Загрузка данных из static/data в базу данных'
 
-
     def handle(self, *args, **kwargs):
         for file, model in FILES_MODELS:
             with open('static/data/' + file, 'r', encoding='utf-8') as f:
@@ -30,8 +29,10 @@ class Command(BaseCommand):
                     record = {}
                     for key, value in row.items():
                         m_field = model._meta.get_field(key)
-                        if (isinstance(m_field, ForeignKey)
-                                and '_id' not in key):
+                        if (
+                            isinstance(m_field, ForeignKey)
+                            and '_id' not in key
+                        ):
                             key = f'{key}_id'
                             record[key] = value
                         else:
