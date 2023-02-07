@@ -21,7 +21,6 @@ FILES_MODELS = [
 class Command(BaseCommand):
     help = 'Загрузка данных из static/data в базу данных'
 
-
     def handle(self, *args, **kwargs):
         for file, model in FILES_MODELS:
             with open('static/data/' + file, 'r', encoding='utf-8') as f:
