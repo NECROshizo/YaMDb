@@ -28,7 +28,7 @@ class CreateDestroyListViewSet(mixins.CreateModelMixin,
                                mixins.ListModelMixin,
                                viewsets.GenericViewSet):
     """Методы и свойства для жанров и категорий"""
-    permission_classes = [IsAdminOrReadOnly,]
+    permission_classes = (IsAdminOrReadOnly,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ('name',)
