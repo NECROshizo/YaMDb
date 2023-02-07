@@ -2,7 +2,6 @@
 
 from django.core.management import BaseCommand
 from django.db.models import ForeignKey
-from django.apps import apps
 
 from reviews.models import (
     User, Title, GenreTitle, Category, Genre, Review, Comment
@@ -29,13 +28,12 @@ class Command(BaseCommand):
                 for row in reader:
                     record = {}
                     for key, value in row.items():
-                        model_field = model._meta.get_field(key)
-                        if (isinstance(model_field, ForeignKey)
+                        m_field = model._meta.get_field(key)
+                        if (isinstance(m_field, ForeignKey)
                             and '_id' not in key):
                             key = f'{key}_id'
                             record[key] = value
                         else:
                             record[key] = value
-                        model.objects.get_or_create(**row)
-                        print(key)
-        self.stdout.write(self.style.SUCCESS('Новые данные внесены в базу'))
+                    model.objects.update_or_create(**record)
+            self.stdout.write(self.style.SUCCESS(f'Данные из {file} внесены в таблицу.'))
