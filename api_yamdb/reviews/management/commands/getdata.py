@@ -30,10 +30,11 @@ class Command(BaseCommand):
                     for key, value in row.items():
                         m_field = model._meta.get_field(key)
                         if (isinstance(m_field, ForeignKey)
-                            and '_id' not in key):
+                                and '_id' not in key):
                             key = f'{key}_id'
                             record[key] = value
                         else:
                             record[key] = value
                     model.objects.update_or_create(**record)
-            self.stdout.write(self.style.SUCCESS(f'Данные из {file} внесены в таблицу.'))
+            self.stdout.write(self.style.SUCCESS(
+                f'Данные из {file} внесены в таблицу.'))

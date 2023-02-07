@@ -82,10 +82,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         title_id = self.context.get('view').kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
 
-        is_post_method = self.context.get('request').method == 'POST'
-        review = title.reviews.filter(author=author).exists()
+        method_is_post = self.context.get('request').method == 'POST'
+        review_exists = title.reviews.filter(author=author).exists()
 
-        if all([is_post_method, review]):
+        if method_is_post and review_exists:
             raise serializers.ValidationError('Отзыв уже написан')
         return data
 
