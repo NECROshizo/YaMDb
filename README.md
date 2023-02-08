@@ -128,6 +128,7 @@ PATCH titles/{title_id}/reviews/{review_id}/
   "text": "string",
   "score": 1
 }
+```
 **Response**
 ```json
 {
