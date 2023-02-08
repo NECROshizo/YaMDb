@@ -39,4 +39,5 @@ class Command(BaseCommand):
                             record[key] = value
                     model.objects.update_or_create(**record)
             self.stdout.write(self.style.SUCCESS(
-                f'Данные из {file} внесены в таблицу.'))
+                f'Данные из {file} внесены в таблицу.'
+            ))
