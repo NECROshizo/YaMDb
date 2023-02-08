@@ -7,19 +7,19 @@ from rest_framework.pagination import PageNumberPagination
 from reviews.models import (
     Category,
     Genre,
-    Title,
     Review,
+    Title,
 )
 
 from .filters import TitleFilter
 from .permissions import IsAdminOrReadOnly, EditPermission
 from .serializers import (
     CategorySerializer,
+    CommentSerializer,
     GenreSerializer,
+    ReviewSerializer,
     TitleEditSerializer,
     TitleGETSerializer,
-    ReviewSerializer,
-    CommentSerializer,
 )
 
 
@@ -53,12 +53,12 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
+    ordering = ['name']
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return TitleGETSerializer
-        else:
-            return TitleEditSerializer
+        return TitleEditSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
