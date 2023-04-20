@@ -53,7 +53,7 @@ python manage.py runserver
 
 ## Структура базы данных
 <div align="center">
-    <img src="https://raw.githubusercontent.com/NECROshizo/api_yamdb/master/api_yamdb/static/ER.png?token=GHSAT0AAAAAABY6TRND4P3VPFBUJPWMOKA6Y7D3UIQ" alt="Диаграмма">
+    <img src="https://github.com/NECROshizo/api_yamdb/blob/master/api_yamdb/static/ER.png" alt="Диаграмма">
 </div>
 
 ## Заполнение базы данных из CSV:
