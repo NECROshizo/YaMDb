@@ -58,7 +58,7 @@ python manage.py runserver
 
 ## Заполнение базы данных из CSV:
 
-Заполнение базы из тестовых подготовленных таблиц располагающихся [api_yamdb/api_yamdb)/static/data/](https://github.com/NECROshizo/api_yamdb/tree/master/api_yamdb/static/data)
+Заполнение базы из тестовых подготовленных таблиц располагающихся [api_yamdb/api_yamdb/static/data/](https://github.com/NECROshizo/api_yamdb/tree/master/api_yamdb/static/data)
 
 ```
 python manage.py getdata
@@ -142,5 +142,5 @@ PATCH titles/{title_id}/reviews/{review_id}/
 
 ## Разработчики:
 -  [**Денис Филиппов**](https://github.com/Sun-Mon-Fil) - в роли первого разработчика
--  [**Пётр Оганин**](https://github.com/NECROshizo) - в роли третьего разработчика(Тимлидер)
 -  [**Мстислав Грацкий**](https://github.com/gratsky) - в роли второго разработчика
+-  [**Пётр Оганин**](https://github.com/NECROshizo) - в роли третьего разработчика(Тимлидер)
